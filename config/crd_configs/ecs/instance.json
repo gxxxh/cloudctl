@@ -1,0 +1,22 @@
+{
+  "CrdName": "AliyunEcsInstance",
+  "MetaInfos": [
+    {
+      "SpecName": "regionId",
+      "DomainName": "RegionId",
+      "InitName": "RegionId",
+      "InitJsonPath": "DescribeInstances.RegionId",
+      "IsArray": false
+    },
+    {
+      "SpecName": "InstanceId",
+      "DomainName": "InstanceId",
+      "InitName": "InstanceId",
+      "InitJsonPath": "DescribeInstances.Instances",
+      "IsArray": true
+    }
+  ],
+  "DomainJsonPath": "Instances.Instance.0",
+  "InitFilePath": "/ecs/instance.json",
+  "DeleteFilePath": "/ecs/snapshot.json"
+}

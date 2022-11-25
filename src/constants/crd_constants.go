@@ -9,8 +9,8 @@ const (
 	DefaultNamespace = "default"
 
 	//CRD CrdName
-	OpenstackVm       = "OpenstackVirtualMachine"
-	OpenstackImage    = "OpenstackImage"
+	OpenstackServer = "OpenstackServer"
+	OpenstackImage  = "OpenstackImage"
 	OpenstackSnapshot = "OpenstackSnapshot"
 	OpenstackDisk     = "OpenstackDisk"
 	AliyunEcsInstance = "AliyunEcsInstance"

@@ -3,9 +3,8 @@ module github.com/kube-stack/cloudctl
 go 1.19
 
 require (
-	github.com/go-logr/logr v1.2.3
 	github.com/kube-stack/multicloud_service v0.1.5
-	github.com/kubesys/client-go v1.1.5
+	github.com/kubesys/client-go v1.1.7
 	github.com/pkg/errors v0.9.1
 	github.com/tidwall/gjson v1.14.2
 	github.com/tidwall/sjson v1.2.5
@@ -14,6 +13,7 @@ require (
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1815 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/gophercloud/gophercloud v1.0.0 // indirect

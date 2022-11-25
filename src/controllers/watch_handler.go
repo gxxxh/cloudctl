@@ -2,36 +2,39 @@ package controllers
 
 import (
 	"encoding/json"
-	"github.com/go-logr/logr"
+	"fmt"
 	"github.com/kube-stack/cloudctl/src/interfaces"
+	"github.com/kube-stack/cloudctl/src/utils"
 	"github.com/kubesys/client-go/pkg/kubesys"
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 type CrdWatchHandler struct {
-	client  kubesys.KubernetesClient
-	CrdName string
-	Log     logr.Logger
+	client    *kubesys.KubernetesClient
+	crdConfig *CrdConfig
+	logger    *Logger
 }
 
-func NewCrdWatchHandler(crdName string, client *kubesys.KubernetesClient) *CrdWatchHandler {
+func NewCrdWatchHandler(crdConfig *CrdConfig, client *kubesys.KubernetesClient) *CrdWatchHandler {
+
 	return &CrdWatchHandler{
-		CrdName: crdName,
-		Log:     logr.Logger{}.WithName("Controller").WithName(crdName),
+		client:    client,
+		crdConfig: crdConfig,
+		logger:    NewLogger().WithName("Controller").WithName(crdConfig.GetCrdName()),
 	}
 }
 
-// todo go func
-func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
+func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
-		handler.Log.Error(err, "Marshal object to crd error")
+		handler.logger.Error(err, "Marshal object to crd error")
 		return
 	}
 	crd := &interfaces.K8sCrd{}
 	err = json.Unmarshal(crdJsonBytes, crd)
 	if err != nil {
-		handler.Log.Error(err, "Unmarshal json into crd error")
+		handler.logger.Error(err, "Unmarshal json into crd error")
 		return
 	}
 	// get Secret Info
@@ -40,30 +43,80 @@ func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
 		return
 	}
 
+	oldLifeCycle := gjson.GetBytes(crdJsonBytes, "spec.lifeCycle").String()
+	oldDomain := gjson.GetBytes(crdJsonBytes, "spec.domain").String()
+
+	//无需处理
+	if oldLifeCycle == "" || oldLifeCycle == "{}" {
+		if oldDomain == "" || oldDomain == "{}" {
+			//add cloud resource to k8s
+			newCrdJson, err := executor.UpdateCrdDomain(crdJsonBytes)
+			if err != nil {
+				return
+			}
+			//update
+			resp, err := handler.client.UpdateResource(string(newCrdJson))
+			if err != nil {
+				handler.logger.Error(err, "Update crd error")
+				return
+			}
+			//todo add event
+			handler.logger.Info(fmt.Sprintf("Add Crd %v to kubernetes cluster", utils.GetCrdInfo(resp)))
+		}
+		handler.logger.Info(fmt.Sprintf("No need to operate on %v", utils.GetCrdInfo(crdJsonBytes)))
+		return
+	}
 	//execute
+	resp, err := executor.ServiceCall([]byte(oldLifeCycle))
+	if err != nil {
+		//todo add event
+		return
+	}
+	//todo add succeed event
+	handler.logger.Info("call resp", "resp: ", resp)
+	//update spec to nil
+	crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, "spec.lifeCycle", "")
+
+	// update domain to new info
+	//add cloud resource to k8s
+	newCrdJson, err := executor.UpdateCrdDomain(crdJsonBytes)
+	if err != nil {
+		return
+	}
+	//update
+	if _, err := handler.client.UpdateResource(string(newCrdJson)); err != nil {
+		handler.logger.Error(err, "Update crd error")
+		return
+	}
+}
+
+// todo go func
+func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
+	handler.reconcile(obj)
+}
+
+func (handler *CrdWatchHandler) DoModified(obj map[string]interface{}) {
+	handler.reconcile(obj)
+}
+
+func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {
+	//todo call delete
+	handler.reconcile(obj)
 }
 
 func (handler *CrdWatchHandler) getExecutor(crdJsonBytes []byte) (*Executor, error) {
-	secret, err := handler.client.GetResource("secret",
+	secret, err := handler.client.GetResource("Secret",
 		gjson.GetBytes(crdJsonBytes, "spec.secretRef.namespace").String(),
 		gjson.GetBytes(crdJsonBytes, "spec.secretRef.name").String(),
 	)
 	if err != nil {
-		handler.Log.Error(err, "Not found secret for the cloud")
+		handler.logger.Error(err, "Not found secret for the cloud")
 		return nil, err
 	}
-	executor, err := NewExecutor(handler.CrdName, handler.Log, secret)
+	executor, err := NewExecutor(handler.crdConfig, handler.logger, secret)
 	if err != nil {
-		handler.Log.Error(err, "Init Executor error")
+		handler.logger.Error(err, "Init Executor error")
 		return nil, err
 	}
 	return executor, nil
-}
-
-func (handler *CrdWatchHandler) DoModified(obj map[string]interface{}) {
-
-}
-
-func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {
-
 }

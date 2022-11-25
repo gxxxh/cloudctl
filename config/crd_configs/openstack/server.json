@@ -1,0 +1,19 @@
+{
+  "CrdName": "OpenstackServer",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "InitName": "Id",
+      "InitJsonPath": "GetComputeV2Servers.Id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetComputeV2Servers": {
+      "Id": ""
+    }
+  },
+  "DeleteJson": {},
+  "DomainJsonPath":"server"
+}
