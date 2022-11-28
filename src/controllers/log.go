@@ -14,7 +14,7 @@ func NewLogger() *Logger {
 }
 func (l *Logger) Error(err error, msg string, KeyAndValues ...interface{}) {
 	ErrMsg := l.StartWith + fmt.Sprintf("Error: %v, Message: %v.\n", err, msg)
-	for i := 0; KeyAndValues != nil && i <= len(KeyAndValues); i += 2 {
+	for i := 0; KeyAndValues != nil && i < len(KeyAndValues); i += 2 {
 		ErrMsg += fmt.Sprintf("	%v:%v.\n", KeyAndValues[i], KeyAndValues[i+1])
 	}
 	log.Println(ErrMsg)
@@ -23,7 +23,7 @@ func (l *Logger) Error(err error, msg string, KeyAndValues ...interface{}) {
 func (l *Logger) Info(msg string, KeyAndValues ...interface{}) {
 	ErrMsg := l.StartWith + fmt.Sprintf("Info: %v.\n", msg)
 
-	for i := 0; KeyAndValues != nil && i <= len(KeyAndValues); i += 2 {
+	for i := 0; KeyAndValues != nil && i < len(KeyAndValues); i += 2 {
 		ErrMsg += fmt.Sprintf("	%v:%v.\n", KeyAndValues[i], KeyAndValues[i+1])
 	}
 	log.Println(ErrMsg)

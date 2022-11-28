@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/kube-stack/cloudctl/src/constants"
 	"github.com/kube-stack/cloudctl/src/utils"
 	cloudservice "github.com/kube-stack/multicloud_service/src/service"
 	"github.com/tidwall/gjson"
@@ -41,13 +42,43 @@ func NewExecutor(crdConfig *CrdConfig, logger *Logger, secretInfo []byte) (*Exec
 	return e, nil
 }
 
-// 从describe中获取元数据
-func (e *Executor) GetMetaFromDomain(domainBytes []byte) map[string]string {
-	params := make(map[string]string)
+// 根据元数据是否为空判断是否为新创建的
+func (e *Executor) isNewCreate(crdJson []byte) bool {
 	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-		params[metaInfo.GetInitName()] = gjson.GetBytes(domainBytes, metaInfo.GetDomainName()).String()
+		if gjson.GetBytes(crdJson, constants.SpecJsonPath+metaInfo.GetSpecName()).String() == "" {
+			return true
+		}
 	}
-	return params
+	return false
+}
+
+//// 从describe中获取元数据
+//func (e *Executor) GetMetaFromDomain(domainBytes []byte) map[string]string {
+//	params := make(map[string]string)
+//	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
+//		params[metaInfo.GetInitName()] = gjson.GetBytes(domainBytes, metaInfo.GetDomainName()).String()
+//	}
+//	return params
+//}
+
+func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
+	if !e.isNewCreate(crdJson) {
+		return crdJson, nil
+	}
+	var (
+		newCrdJson []byte
+		err        error
+	)
+	newCrdJson = make([]byte, len(crdJson), cap(crdJson))
+	copy(newCrdJson, crdJson)
+	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
+		newCrdJson, err = sjson.SetBytes(newCrdJson, constants.SpecJsonPath+metaInfo.GetSpecName(), gjson.GetBytes(resp, metaInfo.GetRespJsonPath()).String())
+		if err != nil {
+			e.logger.Error(err, "SetJson error")
+			return nil, err
+		}
+	}
+	return newCrdJson, nil
 }
 
 func (e *Executor) initCrdInitInfo(specInfo []byte) ([]byte, error) {
@@ -111,7 +142,7 @@ func (e *Executor) UpdateCrdDomain(crdJsonBytes []byte) ([]byte, error) {
 		return nil, err
 	}
 	domain := gjson.GetBytes(resp, e.crdConfig.GetDomainJsonPath()).Raw
-	newCrd, err := sjson.SetRawBytes(crdJsonBytes, "spec.domain", []byte(domain))
+	newCrd, err := sjson.SetRawBytes(crdJsonBytes, constants.DomainJsonPath, []byte(domain))
 	if err != nil {
 		e.logger.Error(err, "setting domain err")
 		return nil, err

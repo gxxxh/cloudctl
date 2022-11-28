@@ -1,0 +1,23 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackServer",
+  "metadata": {
+    "name": "openstack-server-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateComputeV2Servers": {
+        "Opts": {
+          "Name": "test-create",
+          "ImageRef": "952b386b-6f30-46f6-b019-f522b157aa3a",
+          "FlavorRef": "3"
+        }
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-compute-secret"
+    }
+  }
+}

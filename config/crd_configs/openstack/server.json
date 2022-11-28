@@ -6,6 +6,7 @@
       "DomainName": "id",
       "InitName": "Id",
       "InitJsonPath": "GetComputeV2Servers.Id",
+      "RespJsonPath": "server.id",
       "IsArray": false
     }
   ],

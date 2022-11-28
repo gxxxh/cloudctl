@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kube-stack/cloudctl/src/constants"
 	"github.com/kube-stack/cloudctl/src/interfaces"
 	"github.com/kube-stack/cloudctl/src/utils"
 	"github.com/kubesys/client-go/pkg/kubesys"
@@ -43,8 +44,8 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 		return
 	}
 
-	oldLifeCycle := gjson.GetBytes(crdJsonBytes, "spec.lifeCycle").String()
-	oldDomain := gjson.GetBytes(crdJsonBytes, "spec.domain").String()
+	oldLifeCycle := gjson.GetBytes(crdJsonBytes, constants.LifeCycleJsonPath).String()
+	oldDomain := gjson.GetBytes(crdJsonBytes, constants.DomainJsonPath).String()
 
 	//无需处理
 	if oldLifeCycle == "" || oldLifeCycle == "{}" {
@@ -72,11 +73,22 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 		//todo add event
 		return
 	}
-	//todo add succeed event
-	handler.logger.Info("call resp", "resp: ", resp)
-	//update spec to nil
-	crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, "spec.lifeCycle", "")
 
+	//todo add succeed event
+	handler.logger.Info("call resp", "resp: ", string(resp))
+	//update lifecycle to nil
+	//crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, constants.LifeCycleJsonPath, "")
+	crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, constants.LifeCycleJsonPath, nil)
+	//crdJsonBytes, err = sjson.SetRawBytes(crdJsonBytes, constants.LifeCycleJsonPath, nil)
+	if err != nil {
+		handler.logger.Error(err, "Set Crd Lifecycle to nil error.")
+		return
+	}
+	crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
+	if err != nil {
+		handler.logger.Error(err, "Set Crd Meta from create resp error")
+		return
+	}
 	// update domain to new info
 	//add cloud resource to k8s
 	newCrdJson, err := executor.UpdateCrdDomain(crdJsonBytes)
@@ -106,8 +118,8 @@ func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {
 
 func (handler *CrdWatchHandler) getExecutor(crdJsonBytes []byte) (*Executor, error) {
 	secret, err := handler.client.GetResource("Secret",
-		gjson.GetBytes(crdJsonBytes, "spec.secretRef.namespace").String(),
-		gjson.GetBytes(crdJsonBytes, "spec.secretRef.name").String(),
+		gjson.GetBytes(crdJsonBytes, constants.SecretRefNamespaceJsonPath).String(),
+		gjson.GetBytes(crdJsonBytes, constants.SecretRefNameJsonPath).String(),
 	)
 	if err != nil {
 		handler.logger.Error(err, "Not found secret for the cloud")
