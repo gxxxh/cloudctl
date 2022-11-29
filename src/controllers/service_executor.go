@@ -72,7 +72,7 @@ func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	newCrdJson = make([]byte, len(crdJson), cap(crdJson))
 	copy(newCrdJson, crdJson)
 	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-		newCrdJson, err = sjson.SetBytes(newCrdJson, constants.SpecJsonPath+metaInfo.GetSpecName(), gjson.GetBytes(resp, metaInfo.GetRespJsonPath()).String())
+		newCrdJson, err = sjson.SetBytes(newCrdJson, constants.SpecJsonPath+metaInfo.GetSpecName(), gjson.GetBytes(resp, metaInfo.GetInitRespJsonPath()).String())
 		if err != nil {
 			e.logger.Error(err, "SetJson error")
 			return nil, err
@@ -81,24 +81,38 @@ func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	return newCrdJson, nil
 }
 
+// fill crd init json with call parameters
+func (e *Executor) initCrdDeleteJson(specInfo []byte) ([]byte, error) {
+	var (
+		deleteBytes []byte
+		err         error
+	)
+	deleteBytes = e.crdConfig.GetDeleteJson()
+	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
+		paraString := gjson.GetBytes(specInfo, metaInfo.GetSpecName()).String()
+		deleteBytes, err = sjson.SetBytes(deleteBytes, metaInfo.GetDeleteJsonPath(), paraString)
+		if err != nil {
+			e.logger.Error(err, "SetJson error")
+			return nil, err
+		}
+	}
+	return deleteBytes, err
+}
+
+// fill crd init json with call parameters
 func (e *Executor) initCrdInitInfo(specInfo []byte) ([]byte, error) {
 	var (
 		initBytes []byte
 		err       error
 	)
-	// 传入inst.Spec，从中获取对应类型的元数据
-	params := make(map[string]string)
-	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-		params[metaInfo.GetInitName()] = gjson.GetBytes(specInfo, metaInfo.GetSpecName()).String()
-	}
 	//initBytes, err = e.crdConfig.GetInitJson().MarshalJSON()
 	initBytes = e.crdConfig.GetInitJson()
 	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-
+		paraString := gjson.GetBytes(specInfo, metaInfo.GetSpecName()).String()
 		if metaInfo.GetIsArray() {
-			initBytes, err = sjson.SetBytes(initBytes, metaInfo.GetInitJsonPath(), "[\""+params[metaInfo.GetInitName()]+"\"]")
+			initBytes, err = sjson.SetBytes(initBytes, metaInfo.GetInitJsonPath(), "[\""+paraString+"\"]")
 		} else {
-			initBytes, err = sjson.SetBytes(initBytes, metaInfo.GetInitJsonPath(), params[metaInfo.GetInitName()])
+			initBytes, err = sjson.SetBytes(initBytes, metaInfo.GetInitJsonPath(), paraString)
 		}
 		if err != nil {
 			e.logger.Error(err, "SetJson error")
@@ -131,13 +145,48 @@ func (e *Executor) ServiceCall(requestInfo []byte) ([]byte, error) {
 	return nil, nil
 }
 
-func (e *Executor) UpdateCrdDomain(crdJsonBytes []byte) ([]byte, error) {
+// 调用get方法
+func (e *Executor) CallInit(crdJsonBytes []byte) ([]byte, error) {
 	specInfo := []byte(gjson.GetBytes(crdJsonBytes, "spec").String())
 	crdInitInfo, err := e.initCrdInitInfo(specInfo)
 	if err != nil {
 		return nil, err
 	}
 	resp, err := e.ServiceCall(crdInitInfo)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+// 调用删除方法
+func (e *Executor) CallDelete(crdJsonBytes []byte) ([]byte, error) {
+	specInfo := []byte(gjson.GetBytes(crdJsonBytes, "spec").String())
+	crdDeleteInfo, err := e.initCrdDeleteJson(specInfo)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := e.ServiceCall(crdDeleteInfo)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+// 检查资源是否删除
+func (e *Executor) CheckExist(crdJsonBytes []byte) bool {
+	resp, err := e.CallInit(crdJsonBytes)
+	if err != nil {
+		return false
+	}
+	if gjson.GetBytes(resp, e.crdConfig.GetDomainJsonPath()).Exists() {
+		return true
+	}
+	return false
+}
+
+func (e *Executor) UpdateCrdDomain(crdJsonBytes []byte) ([]byte, error) {
+	resp, err := e.CallInit(crdJsonBytes)
 	if err != nil {
 		return nil, err
 	}

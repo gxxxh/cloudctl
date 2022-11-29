@@ -10,12 +10,12 @@ import (
 // meta info in spec, which will be used in cloud resource init
 // todo add is in response, using
 type MetaInfo struct {
-	SpecName     string `protobuf:"bytes,1,opt,name=SpecName,proto3" json:"SpecName,omitempty"`
-	DomainName   string `protobuf:"bytes,2,opt,name=DomainName,proto3" json:"DomainName,omitempty"`
-	InitName     string `protobuf:"bytes,3,opt,name=InitName,proto3" json:"InitName,omitempty"`
-	InitJsonPath string `protobuf:"bytes,4,opt,name=InitJsonPath,proto3" json:"InitJsonPath,omitempty"`
-	RespJsonPath string `protobuf:"bytes,5,opt,name=RespJsonPath,proto3" json:"RespJsonPath,omitempty"`
-	IsArray      bool   `protobuf:"varint,6,opt,name=IsArray,proto3" json:"IsArray,omitempty"`
+	SpecName         string `protobuf:"bytes,1,opt,name=SpecName,proto3" json:"SpecName,omitempty"`
+	DomainName       string `protobuf:"bytes,2,opt,name=DomainName,proto3" json:"DomainName,omitempty"`
+	InitJsonPath     string `protobuf:"bytes,5,opt,name=InitJsonPath,proto3" json:"InitJsonPath,omitempty"`
+	DeleteJsonPath   string `protobuf:"bytes,5,opt,name=DeleteJsonPath,proto3" json:"DeleteJsonPath,omitempty"`
+	InitRespJsonPath string `protobuf:"bytes,6,opt,name=InitRespJsonPath,proto3" json:"InitRespJsonPath,omitempty"`
+	IsArray          bool   `protobuf:"varint,7,opt,name=IsArray,proto3" json:"IsArray,omitempty"`
 }
 
 func (x *MetaInfo) GetSpecName() string {
@@ -32,22 +32,23 @@ func (x *MetaInfo) GetDomainName() string {
 	return ""
 }
 
-func (x *MetaInfo) GetInitName() string {
-	if x != nil {
-		return x.InitName
-	}
-	return ""
-}
-
 func (x *MetaInfo) GetInitJsonPath() string {
 	if x != nil {
 		return x.InitJsonPath
 	}
 	return ""
 }
-func (x *MetaInfo) GetRespJsonPath() string {
+
+func (x *MetaInfo) GetDeleteJsonPath() string {
 	if x != nil {
-		return x.RespJsonPath
+		return x.DeleteJsonPath
+	}
+	return ""
+}
+
+func (x *MetaInfo) GetInitRespJsonPath() string {
+	if x != nil {
+		return x.InitRespJsonPath
 	}
 	return ""
 }

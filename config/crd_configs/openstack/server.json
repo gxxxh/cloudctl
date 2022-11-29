@@ -4,9 +4,9 @@
     {
       "SpecName": "id",
       "DomainName": "id",
-      "InitName": "Id",
       "InitJsonPath": "GetComputeV2Servers.Id",
-      "RespJsonPath": "server.id",
+      "DeleteJsonPath": "DeleteComputeV2Servers.Id",
+      "InitRespJsonPath": "server.id",
       "IsArray": false
     }
   ],
@@ -15,6 +15,10 @@
       "Id": ""
     }
   },
-  "DeleteJson": {},
+  "DeleteJson": {
+    "DeleteComputeV2Servers": {
+      "Id": ""
+    }
+  },
   "DomainJsonPath":"server"
 }
