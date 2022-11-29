@@ -6,11 +6,14 @@
   },
   "spec": {
     "lifeCycle": {
-      "GetComputeV2Servers": {
-        "id": "72634d76-8545-4586-95a9-34cbd57a294b"
+      "RebuildComputeV2Servers": {
+        "id": "72634d76-8545-4586-95a9-34cbd57a294b",
+        "Opts": {
+          "AdminPass": "111111"
+        }
       }
     },
-    "id": "72634d76-8545-4586-95a9-34cbd57a294b",
+    "id": "",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-compute-secret"

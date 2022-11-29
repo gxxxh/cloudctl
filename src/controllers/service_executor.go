@@ -8,6 +8,7 @@ import (
 	cloudservice "github.com/kube-stack/multicloud_service/src/service"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"strings"
 )
 
 // todo panic
@@ -44,10 +45,9 @@ func NewExecutor(crdConfig *CrdConfig, logger *Logger, secretInfo []byte) (*Exec
 
 // 根据元数据是否为空判断是否为新创建的
 func (e *Executor) isNewCreate(crdJson []byte) bool {
-	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-		if gjson.GetBytes(crdJson, constants.SpecJsonPath+metaInfo.GetSpecName()).String() == "" {
-			return true
-		}
+	lifeCycle := gjson.GetBytes(crdJson, constants.LifeCycleJsonPath).String()
+	if strings.Contains(lifeCycle, "Create") {
+		return true
 	}
 	return false
 }
@@ -62,9 +62,6 @@ func (e *Executor) isNewCreate(crdJson []byte) bool {
 //}
 
 func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
-	if !e.isNewCreate(crdJson) {
-		return crdJson, nil
-	}
 	var (
 		newCrdJson []byte
 		err        error
@@ -185,16 +182,23 @@ func (e *Executor) CheckExist(crdJsonBytes []byte) bool {
 	return false
 }
 
-func (e *Executor) UpdateCrdDomain(crdJsonBytes []byte) ([]byte, error) {
+func (e *Executor) updateCrdJson(crdJsonBytes []byte) ([]byte, error) {
 	resp, err := e.CallInit(crdJsonBytes)
 	if err != nil {
 		return nil, err
 	}
+	//set domain
 	domain := gjson.GetBytes(resp, e.crdConfig.GetDomainJsonPath()).Raw
 	newCrd, err := sjson.SetRawBytes(crdJsonBytes, constants.DomainJsonPath, []byte(domain))
 	if err != nil {
 		e.logger.Error(err, "setting domain err")
 		return nil, err
 	}
+	//set meta info, which may be empty in other operations
+	for _, metaInfo := range e.crdConfig.MetaInfos {
+		metaJson := gjson.GetBytes(resp, metaInfo.GetInitRespJsonPath()).Raw
+		newCrd, err = sjson.SetRawBytes(newCrd, constants.SpecJsonPath+metaInfo.GetSpecName(), []byte(metaJson))
+	}
+
 	return newCrd, nil
 }

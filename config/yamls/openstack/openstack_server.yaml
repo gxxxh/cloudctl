@@ -12,7 +12,7 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: Server ID
-          jsonPath: .spec.domain.id
+          jsonPath: .spec.id
           name: ID
           type: string
         - description: Server Name

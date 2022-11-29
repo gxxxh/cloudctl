@@ -37,6 +37,7 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 		return
 	}
 
+	isNewCreate := executor.isNewCreate(crdJsonBytes)
 	oldLifeCycle := gjson.GetBytes(crdJsonBytes, constants.LifeCycleJsonPath).String()
 	oldDomain := gjson.GetBytes(crdJsonBytes, constants.DomainJsonPath).String()
 
@@ -47,7 +48,7 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 			handler.logger.Info(fmt.Sprintf("Add Crd %v to kubernetes cluster", utils.GetCrdInfo(crdJsonBytes)))
 		}
 		//update domain, remote status may change
-		if err = handler.updateCrdDomain(executor, crdJsonBytes); err != nil {
+		if err = handler.updateCrd(executor, crdJsonBytes); err != nil {
 			return
 		}
 		handler.logger.Info(fmt.Sprintf("No need to operate on %v", utils.GetCrdInfo(crdJsonBytes)))
@@ -59,7 +60,7 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 		//todo add event
 		return
 	}
-
+	//todo get id from lifecycle
 	//todo add succeed event
 	handler.logger.Info("call resp", "resp: ", string(resp))
 	//update lifecycle to nil
@@ -69,13 +70,15 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 		return
 	}
 	//set meta info from resp if the lifecycle is create
-	crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
+	if isNewCreate {
+		crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
+	}
 	if err != nil {
 		handler.logger.Error(err, "Set Crd Meta from create resp error")
 		return
 	}
 	// update domain to new info
-	err = handler.updateCrdDomain(executor, crdJsonBytes)
+	err = handler.updateCrd(executor, crdJsonBytes)
 	if err != nil {
 		return
 	}
@@ -83,9 +86,9 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
 }
 
 // 调用init更新crd的domain并提交给k8s
-func (handler *CrdWatchHandler) updateCrdDomain(executor *Executor, crdJsonBytes []byte) error {
+func (handler *CrdWatchHandler) updateCrd(executor *Executor, crdJsonBytes []byte) error {
 	// update domain to new info
-	newCrdJson, err := executor.UpdateCrdDomain(crdJsonBytes)
+	newCrdJson, err := executor.updateCrdJson(crdJsonBytes)
 	if err != nil {
 		return err
 	}
