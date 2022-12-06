@@ -4,6 +4,7 @@
     {
       "SpecName": "id",
       "DomainName": "id",
+      "CloudParaName":"id",
       "InitJsonPath": "GetComputeV2Servers.Id",
       "DeleteJsonPath": "DeleteComputeV2Servers.Id",
       "InitRespJsonPath": "server.id",

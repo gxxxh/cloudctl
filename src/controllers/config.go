@@ -12,7 +12,8 @@ import (
 type MetaInfo struct {
 	SpecName         string `protobuf:"bytes,1,opt,name=SpecName,proto3" json:"SpecName,omitempty"`
 	DomainName       string `protobuf:"bytes,2,opt,name=DomainName,proto3" json:"DomainName,omitempty"`
-	InitJsonPath     string `protobuf:"bytes,5,opt,name=InitJsonPath,proto3" json:"InitJsonPath,omitempty"`
+	CloudParaName    string `protobuf:"bytes,3,opt,name=CloudParaName,proto3" json:"CloudParaName,omitempty"`
+	InitJsonPath     string `protobuf:"bytes,4,opt,name=InitJsonPath,proto3" json:"InitJsonPath,omitempty"`
 	DeleteJsonPath   string `protobuf:"bytes,5,opt,name=DeleteJsonPath,proto3" json:"DeleteJsonPath,omitempty"`
 	InitRespJsonPath string `protobuf:"bytes,6,opt,name=InitRespJsonPath,proto3" json:"InitRespJsonPath,omitempty"`
 	IsArray          bool   `protobuf:"varint,7,opt,name=IsArray,proto3" json:"IsArray,omitempty"`
@@ -28,6 +29,12 @@ func (x *MetaInfo) GetSpecName() string {
 func (x *MetaInfo) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
+	}
+	return ""
+}
+func (x *MetaInfo) GetCloudParaName() string {
+	if x != nil {
+		return x.CloudParaName
 	}
 	return ""
 }

@@ -11,78 +11,92 @@ import (
 )
 
 type CrdWatchHandler struct {
-	client    *kubesys.KubernetesClient
-	crdConfig *CrdConfig
-	logger    *Logger
+	client        *kubesys.KubernetesClient
+	crdConfig     *CrdConfig
+	eventRecorder *EventRecorder
+	logger        *Logger
 }
 
 func NewCrdWatchHandler(crdConfig *CrdConfig, client *kubesys.KubernetesClient) *CrdWatchHandler {
-
+	logger := NewLogger().WithName("Controller").WithName(crdConfig.GetCrdName())
 	return &CrdWatchHandler{
-		client:    client,
-		crdConfig: crdConfig,
-		logger:    NewLogger().WithName("Controller").WithName(crdConfig.GetCrdName()),
+		client:        client,
+		crdConfig:     crdConfig,
+		eventRecorder: NewEventRecorder(client, logger),
+		logger:        logger,
 	}
 }
 
-func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) {
+func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		handler.logger.Error(err, "Marshal object to crd error")
-		return
+		return err
 	}
 	// get Secret Info
 	executor, err := handler.getExecutor(crdJsonBytes)
 	if err != nil {
-		return
+		return err
 	}
 
 	isNewCreate := executor.isNewCreate(crdJsonBytes)
 	oldLifeCycle := gjson.GetBytes(crdJsonBytes, constants.LifeCycleJsonPath).String()
 	oldDomain := gjson.GetBytes(crdJsonBytes, constants.DomainJsonPath).String()
 
+	//设置元数据，防止用户修改为空
+	if isNewCreate == false && oldLifeCycle != "" && oldLifeCycle != "{}" {
+		crdJsonBytes, err = executor.SetMetaByLifecycle([]byte(oldLifeCycle), crdJsonBytes)
+		if err != nil {
+			return err
+		}
+	}
 	//无需处理
 	if oldLifeCycle == "" || oldLifeCycle == "{}" {
 		if oldDomain == "" || oldDomain == "{}" {
-			//todo add event
-			handler.logger.Info(fmt.Sprintf("Add Crd %v to kubernetes cluster", utils.GetCrdInfo(crdJsonBytes)))
-		}
-		//update domain, remote status may change
-		if err = handler.updateCrd(executor, crdJsonBytes); err != nil {
-			return
+			msg := fmt.Sprintf("Add Crd %v to kubernetes cluster", utils.GetCrdInfo(crdJsonBytes))
+			handler.eventRecorder.Event(crdJsonBytes, EventAPIVersion, "Add Resource to k8s", msg)
+			handler.logger.Info(msg)
+			//update domain, remote status may change
+			if err = handler.updateCrd(executor, crdJsonBytes); err != nil {
+				handler.logger.Error(err, "Update crd error")
+				return nil
+			}
 		}
 		handler.logger.Info(fmt.Sprintf("No need to operate on %v", utils.GetCrdInfo(crdJsonBytes)))
-		return
+		return nil
 	}
+
 	//execute
 	resp, err := executor.ServiceCall([]byte(oldLifeCycle))
 	if err != nil {
-		//todo add event
-		return
+		handler.eventRecorder.Event(crdJsonBytes, EventTypeError, "execute lifecycle error", err.Error())
+		return nil
 	}
-	//todo get id from lifecycle
-	//todo add succeed event
+	handler.eventRecorder.Event(crdJsonBytes, EventTypeNormal, "execute lifecycle succeed", string(resp))
 	handler.logger.Info("call resp", "resp: ", string(resp))
+
 	//update lifecycle to nil
 	crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, constants.LifeCycleJsonPath, nil)
 	if err != nil {
 		handler.logger.Error(err, "Set Crd Lifecycle to nil error.")
-		return
+		return err
 	}
+
 	//set meta info from resp if the lifecycle is create
 	if isNewCreate {
 		crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
+		if err != nil {
+			handler.logger.Error(err, "Set Crd Meta from create resp error")
+			return err
+		}
 	}
-	if err != nil {
-		handler.logger.Error(err, "Set Crd Meta from create resp error")
-		return
-	}
+
 	// update domain to new info
 	err = handler.updateCrd(executor, crdJsonBytes)
 	if err != nil {
-		return
+		return nil
 	}
-	return
+	return nil
 }
 
 // 调用init更新crd的domain并提交给k8s
@@ -90,23 +104,42 @@ func (handler *CrdWatchHandler) updateCrd(executor *Executor, crdJsonBytes []byt
 	// update domain to new info
 	newCrdJson, err := executor.updateCrdJson(crdJsonBytes)
 	if err != nil {
+		handler.logger.Error(err, "Update crd json error")
 		return err
 	}
 	//update
 	if _, err := handler.client.UpdateResource(string(newCrdJson)); err != nil {
-		handler.logger.Error(err, "Update crd error")
+		handler.logger.Error(err, "Update crd to k8s error")
+		handler.eventRecorder.Event(newCrdJson, EventTypeError, "update crd domain fail", err.Error())
 		return err
 	}
+	handler.eventRecorder.Event(newCrdJson, EventTypeNormal, "execute get succeed", "update crd domain succeed")
 	return nil
 }
 
 // todo go func
 func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
-	handler.reconcile(obj)
+	crdJsonBytes, err := json.Marshal(obj)
+	if err != nil {
+		handler.logger.Error(err, "Marshal object to crd error")
+		return
+	}
+	err = handler.reconcile(obj)
+	if err != nil {
+		handler.eventRecorder.Event(crdJsonBytes, EventTypeError, "internal error", err.Error())
+	}
 }
 
 func (handler *CrdWatchHandler) DoModified(obj map[string]interface{}) {
-	handler.reconcile(obj)
+	crdJsonBytes, err := json.Marshal(obj)
+	if err != nil {
+		handler.logger.Error(err, "Marshal object to crd error")
+		return
+	}
+	err = handler.reconcile(obj)
+	if err != nil {
+		handler.eventRecorder.Event(crdJsonBytes, EventTypeError, "internal error", err.Error())
+	}
 }
 
 func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {

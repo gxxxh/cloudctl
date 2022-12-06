@@ -2,39 +2,32 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"testing"
 )
 
-func TestInitCrdInitInfo(t *testing.T) {
+func NewTestExecutor() *Executor {
 	initJson := `{
 	"GetComputeV2Servers": {
 		"Id": ""
 	}
 	}`
-	//paraMap := map[structpb.Value_StringValue]structpb.Value_StringValue{
-	//	structpb.Value_StringValue{StringValue: "Id"}: structpb.Value_StringValue{StringValue: ""},
-	//}
-	//initMap := map[string]interface{}{
-	//	"GetComputeV2Servers": paraMap,
-	//}
-	//initJson, err := structpb.NewStruct(initMap)
-	//if err != nil {
-	//	t.Error(err)
-	//}
 	var newInit json.RawMessage
 	newInit.UnmarshalJSON([]byte(initJson))
-	executor := &Executor{
+	return &Executor{
 		service: nil,
 		crdConfig: &CrdConfig{
 			CrdName: "OpenstackServer",
 			MetaInfos: []*MetaInfo{
 				&MetaInfo{
-					SpecName:     "id",
-					DomainName:   "id",
-					InitName:     "Id",
-					InitJsonPath: "GetComputeV2Servers.Id",
-					IsArray:      false,
+					SpecName:         "id",
+					DomainName:       "id",
+					CloudParaName:    "id",
+					InitJsonPath:     "GetComputeV2Servers.Id",
+					DeleteJsonPath:   "DeleteComputeV2Servers.Id",
+					InitRespJsonPath: "server.id",
+					IsArray:          false,
 				},
 			},
 			InitJson:       newInit,
@@ -43,6 +36,9 @@ func TestInitCrdInitInfo(t *testing.T) {
 		},
 		logger: NewLogger().WithName("Test"),
 	}
+}
+func TestExecutor_CallInit(t *testing.T) {
+	executor := NewTestExecutor()
 	specInfo := `{
 		"id": "111111",
 	}`
@@ -52,4 +48,34 @@ func TestInitCrdInitInfo(t *testing.T) {
 		t.Error(err)
 	}
 	log.Println(string(initInfo))
+}
+
+func TestExecutor_SetMetaByLifecycle(t *testing.T) {
+	lifeCycleJson := ` {
+      "GetComputeV2Servers": {
+        "id": "72634d76-8545-4586-95a9-34cbd57a294b"
+      }
+    }`
+	crdJson := `{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackServer",
+  "metadata": {
+    "name": "openstack-server-create"
+  },
+  "spec": {
+    "lifeCycle": {
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-compute-secret"
+    }
+  }
+}`
+	executor := NewTestExecutor()
+	newCrdJson, err := executor.SetMetaByLifecycle([]byte(lifeCycleJson), []byte(crdJson))
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(string(newCrdJson))
 }

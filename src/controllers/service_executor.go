@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/kube-stack/cloudctl/src/constants"
 	"github.com/kube-stack/cloudctl/src/utils"
 	cloudservice "github.com/kube-stack/multicloud_service/src/service"
@@ -52,15 +53,36 @@ func (e *Executor) isNewCreate(crdJson []byte) bool {
 	return false
 }
 
-//// 从describe中获取元数据
-//func (e *Executor) GetMetaFromDomain(domainBytes []byte) map[string]string {
-//	params := make(map[string]string)
-//	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
-//		params[metaInfo.GetInitName()] = gjson.GetBytes(domainBytes, metaInfo.GetDomainName()).String()
-//	}
-//	return params
-//}
+func (e *Executor) SetMetaByLifecycle(lifeCycle []byte, crdJson []byte) ([]byte, error) {
+	var (
+		newCrdJson []byte
+		err        error
+	)
+	newCrdJson = make([]byte, len(crdJson), cap(crdJson))
+	copy(newCrdJson, crdJson)
+	lifeCycleMap := gjson.ParseBytes(lifeCycle).Map()
+	if len(lifeCycleMap) == 0 {
+		err := fmt.Errorf(", the lifecycle is empty")
+		e.logger.Error(err, "SetMetaByLifeCycle error")
+		return nil, err
+	}
+	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
+		for _, paraInfos := range lifeCycleMap {
+			for paraName, paraValue := range paraInfos.Map() {
+				if metaInfo.GetCloudParaName() == paraName {
+					newCrdJson, err = sjson.SetBytes(newCrdJson, constants.SpecJsonPath+metaInfo.GetSpecName(), paraValue.String())
+					if err != nil {
+						e.logger.Error(err, "SetMetaByLifecycle SetJson error")
+						return nil, err
+					}
+				}
+			}
+		}
+	}
+	return newCrdJson, nil
+}
 
+// 根据创建返回的resp设置元数据
 func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	var (
 		newCrdJson []byte
@@ -71,7 +93,7 @@ func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
 		newCrdJson, err = sjson.SetBytes(newCrdJson, constants.SpecJsonPath+metaInfo.GetSpecName(), gjson.GetBytes(resp, metaInfo.GetInitRespJsonPath()).String())
 		if err != nil {
-			e.logger.Error(err, "SetJson error")
+			e.logger.Error(err, "SetMetaByResp SetJson error")
 			return nil, err
 		}
 	}
