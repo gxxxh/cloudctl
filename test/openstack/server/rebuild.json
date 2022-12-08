@@ -7,7 +7,7 @@
   "spec": {
     "lifeCycle": {
       "RebuildComputeV2Servers": {
-        "id": "9d624eb8-7e06-4044-bb82-ca7d057fdb01",
+        "id": "3580cea3-d392-4764-b4ca-bf4299311691",
         "Opts": {
           "AdminPass": "111111",
           "Name": "test-create",

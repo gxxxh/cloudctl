@@ -49,10 +49,10 @@ func (r *EventRecorder) pushEvent(eventJsonBytes []byte) error {
 	jsonStr := gjson.ParseBytes(eventJsonBytes).String()
 	resp, err := r.client.CreateResource(jsonStr)
 	if err != nil {
-		r.logger.Error(err, fmt.Sprintf("Create Event error, resp is %v", resp))
+		r.logger.Error(err, fmt.Sprintf("Create Event error, resp is %v", string(resp)))
 		return err
 	}
-	r.logger.Info(fmt.Sprintf("Create Event succeed, resp is %v", resp))
+	r.logger.Info(fmt.Sprintf("Create Event succeed, resp is %v", string(resp)))
 	return nil
 }
 

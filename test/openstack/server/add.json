@@ -2,12 +2,12 @@
   "apiVersion": "doslab.io/v1",
   "kind": "OpenstackServer",
   "metadata": {
-    "name": "openstack-server1"
+    "name": "openstack-server-add"
   },
   "spec": {
     "lifeCycle": {
     },
-    "id": "72634d76-8545-4586-95a9-34cbd57a294b",
+    "id": "9d624eb8-7e06-4044-bb82-ca7d057fdb01",
     "secretRef":{
       "namespace": "default",
       "name": "openstack-compute-secret"
