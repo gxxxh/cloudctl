@@ -1,0 +1,26 @@
+
+{
+  "CrdName": "OpenstackImage",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName":"id",
+      "InitJsonPath": "GetImageserviceV2Images.id",
+      "DeleteJsonPath": "DeleteImageserviceV2Images.id",
+      "InitRespJsonPath": "id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetImageserviceV2Images": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteImageserviceV2Images": {
+      "id": ""
+    }
+  },
+  "DomainJsonPath":""
+}

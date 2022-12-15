@@ -4,10 +4,10 @@ var ConfigPath = "/root/go/src/cloudctl/config"
 
 const (
 	//CRD Group & Version
-	DefaultGroup     = "doslab.io"
-	DefaultVersion   = "v1"
-	DefaultNamespace = "default"
-
+	DefaultGroup               = "doslab.io"
+	DefaultVersion             = "v1"
+	DefaultNamespace           = "default"
+	SpecName                   = "spec"
 	SpecJsonPath               = "spec."
 	LifeCycleJsonPath          = "spec.lifeCycle"
 	DomainJsonPath             = "spec.domain"
@@ -21,3 +21,5 @@ const (
 	AliyunEcsInstance = "AliyunEcsInstance"
 	AliyunEcsSnapshot = "AliyunEcsSnapshot"
 )
+
+const CreateKeyWord = "Create"

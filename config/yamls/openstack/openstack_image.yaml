@@ -1,0 +1,89 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: openstackimages.doslab.io
+spec:
+  group: doslab.io
+  names:
+    kind: OpenstackImage
+    plural: openstackimages
+    singular: openstackimage
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - description: ID is the image UUID
+          jsonPath: .spec.id
+          name: ID
+          type: string
+        - description: Name is the human-readable display name for the image.
+          jsonPath: .spec.domain.name
+          name: Name
+          type: string
+        - description: Status is the image status. It can be "queued" or "active"
+          jsonPath: .spec.domain.status
+          name: Status
+          type: string
+        - description: ContainerFormat is the format of the container,Valid values are ami, ari, aki, bare, and ovf.
+          jsonPath: .spec.domain.container_format
+          name: ContainerFormat
+          type: string
+        - description: DiskFormat is the format of the disk.If set, valid values are ami, ari, aki, vhd, vmdk, raw, qcow2, vdi,and iso.
+          jsonPath: .spec.domain.disk_format
+          name: DiskFormat
+          type: string
+        - description: Owner is the tenant ID the image belongs to.
+          jsonPath: .spec.domain.owner
+          name: Owner
+          type: string
+        - description: Visibility defines who can see/use the image.
+          jsonPath: .spec.domain.visibility
+          name: Visibility
+          type: string
+      name: v1
+      schema:
+        openAPIV3Schema:
+          description: image is the Schema for the openstack image API
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: spec defines the desired state of openstack image
+              properties:
+                domain:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                lifeCycle:
+                  description: request to be execute
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                #                  meta info
+                id:
+                  type: string
+                #                  secret info requeired
+                secretRef:
+                  description: SrereteRef
+                  properties:
+                    name:
+                      description: secretName
+                      type: string
+                    namespace:
+                      description: secretNamespace
+                      type: string
+                  required:
+                    - name
+                    - namespace
+                  type: object
+              required:
+                - secretRef
+              type: object
+            status:
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: { }

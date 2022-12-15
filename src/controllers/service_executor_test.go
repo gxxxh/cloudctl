@@ -60,7 +60,7 @@ func TestExecutor_SetMetaByLifecycle(t *testing.T) {
   "apiVersion": "doslab.io/v1",
   "kind": "OpenstackServer",
   "metadata": {
-    "name": "openstack-server-create"
+    "name": "openstack-server-create.json"
   },
   "spec": {
     "lifeCycle": {

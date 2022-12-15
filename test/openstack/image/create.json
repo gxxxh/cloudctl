@@ -1,0 +1,28 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackImage",
+  "metadata": {
+    "name": "openstack-image-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateImageserviceV2Images": {
+        "opts": {
+          "name": "test-create",
+          "properties": {
+            "architecture": "x86_64"
+          },
+          "Tags": [
+            "ubuntu",
+            "quantal"
+          ]
+        }
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-image-secret"
+    }
+  }
+}

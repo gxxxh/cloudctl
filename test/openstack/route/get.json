@@ -1,0 +1,19 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackRouter",
+  "metadata": {
+    "name": "openstack-router-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "GetNetworkingV2ExtensionsLayer3Routers": {
+        "id": "928f9b5e-0bce-4a99-a653-c341b866f92a"
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-network-secret"
+    }
+  }
+}

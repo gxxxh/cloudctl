@@ -1,0 +1,31 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackRouter",
+  "metadata": {
+    "name": "openstack-router-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateNetworkingV2ExtensionsLayer3Routers": {
+        "opts": {
+          "name": "test-router-create",
+          "admin_state_up": false,
+          "external_gateway_info": {
+            "network_id": "a3176333-3df6-480f-af2b-dc5e02ea1aa0",
+            "enable_snat": false,
+            "external_fixed_ips": [
+              {
+                "subnet_id": "21ed2f62-39bd-430c-900a-62728cb4fa8d"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-network-secret"
+    }
+  }
+}

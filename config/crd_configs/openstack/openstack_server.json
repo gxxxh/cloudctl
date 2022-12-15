@@ -5,20 +5,20 @@
       "SpecName": "id",
       "DomainName": "id",
       "CloudParaName":"id",
-      "InitJsonPath": "GetComputeV2Servers.Id",
-      "DeleteJsonPath": "DeleteComputeV2Servers.Id",
+      "InitJsonPath": "GetComputeV2Servers.id",
+      "DeleteJsonPath": "DeleteComputeV2Servers.id",
       "InitRespJsonPath": "server.id",
       "IsArray": false
     }
   ],
   "InitJson": {
     "GetComputeV2Servers": {
-      "Id": ""
+      "id": ""
     }
   },
   "DeleteJson": {
     "DeleteComputeV2Servers": {
-      "Id": ""
+      "id": ""
     }
   },
   "DomainJsonPath":"server"

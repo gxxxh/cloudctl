@@ -1,0 +1,19 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackImage",
+  "metadata": {
+    "name": "openstack-image-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "DeleteImageserviceV2Images": {
+        "id": "e6ae071e-c5d4-46d7-a2f2-84b00e4e27bb"
+      }
+    },
+    "id": "e6ae071e-c5d4-46d7-a2f2-84b00e4e27bb",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-image-secret"
+    }
+  }
+}

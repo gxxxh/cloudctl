@@ -1,0 +1,16 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackImage",
+  "metadata": {
+    "name": "openstack-image-add"
+  },
+  "spec": {
+    "lifeCycle": {
+    },
+    "id": "952b386b-6f30-46f6-b019-f522b157aa3a",
+    "secretRef":{
+      "namespace": "default",
+      "name": "openstack-image-secret"
+    }
+  }
+}

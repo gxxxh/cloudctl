@@ -1,0 +1,22 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackNetwork",
+  "metadata": {
+    "name": "openstack-network-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateNetworkingV2Networks": {
+        "opts": {
+          "name": "test-create-private-netywork",
+          "admin_state_up": true
+        }
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-network-secret"
+    }
+  }
+}

@@ -39,7 +39,8 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 		return err
 	}
 
-	isNewCreate := executor.isNewCreate(crdJsonBytes)
+	isNewCreate := executor.IsNewCreate(crdJsonBytes)
+	isDelete := executor.IsDelete(crdJsonBytes)
 	oldLifeCycle := gjson.GetBytes(crdJsonBytes, constants.LifeCycleJsonPath).String()
 	oldDomain := gjson.GetBytes(crdJsonBytes, constants.DomainJsonPath).String()
 
@@ -53,11 +54,15 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 	//无需处理
 	if oldLifeCycle == "" || oldLifeCycle == "{}" {
 		if oldDomain == "" || oldDomain == "{}" {
+			if executor.IsMetaEmpty(crdJsonBytes) { //什么都不执行
+				handler.logger.Info("the meta data is empty")
+				return nil
+			}
 			msg := fmt.Sprintf("Add Crd %v to kubernetes cluster", utils.GetCrdInfo(crdJsonBytes))
 			handler.eventRecorder.Event(crdJsonBytes, EventAPIVersion, "Add Resource to k8s", msg)
 			handler.logger.Info(msg)
 			//update domain, remote status may change
-			if err = handler.updateCrd(executor, crdJsonBytes); err != nil {
+			if err = handler.updateCrd(executor, crdJsonBytes, false); err != nil {
 				handler.logger.Error(err, "Update crd error")
 				return nil
 			}
@@ -82,17 +87,29 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 		return err
 	}
 
-	//set meta info from resp if the lifecycle is create
+	//set meta info from resp if the lifecycle is create.json
 	if isNewCreate {
 		crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
 		if err != nil {
-			handler.logger.Error(err, "Set Crd Meta from create resp error")
+			handler.logger.Error(err, "Set Crd Meta from create.json resp error")
 			return err
 		}
 	}
-
+	if isDelete {
+		crdJsonBytes, err = sjson.SetBytes(crdJsonBytes, constants.DomainJsonPath, nil)
+		if err != nil {
+			handler.logger.Error(err, "Set Crd Lifecycle to nil error.")
+			return err
+		}
+		crdJsonBytes, err = executor.SetMetaEmpty(crdJsonBytes)
+		if err != nil {
+			handler.logger.Error(err, "Set Crd metainfo to nil error.")
+			return err
+		}
+		crdJsonBytes, err = executor.SetMetaEmpty(crdJsonBytes)
+	}
 	// update domain to new info
-	err = handler.updateCrd(executor, crdJsonBytes)
+	err = handler.updateCrd(executor, crdJsonBytes, isDelete)
 	if err != nil {
 		return nil
 	}
@@ -100,13 +117,22 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 }
 
 // 调用init更新crd的domain并提交给k8s
-func (handler *CrdWatchHandler) updateCrd(executor *Executor, crdJsonBytes []byte) error {
+func (handler *CrdWatchHandler) updateCrd(executor *Executor, crdJsonBytes []byte, isDelete bool) error {
+	var (
+		newCrdJson []byte
+		err        error
+	)
 	// update domain to new info
-	newCrdJson, err := executor.updateCrdJson(crdJsonBytes)
-	if err != nil {
-		handler.logger.Error(err, "Update crd json error")
-		return err
+	if !isDelete {
+		newCrdJson, err = executor.updateCrdJson(crdJsonBytes)
+		if err != nil {
+			handler.logger.Error(err, "Update crd json error")
+			return err
+		}
+	} else {
+		newCrdJson = crdJsonBytes
 	}
+
 	//update
 	if _, err := handler.client.UpdateResource(string(newCrdJson)); err != nil {
 		handler.logger.Error(err, "Update crd to k8s error")
@@ -155,7 +181,7 @@ func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {
 		return
 	}
 	//check if the resource is already delete
-	if executor.CheckExist(crdJsonBytes) == false {
+	if executor.IsMetaEmpty(crdJsonBytes) || executor.CheckExist(crdJsonBytes) == false {
 		handler.logger.Info(fmt.Sprintf("recource %v in cloud is already delete, ", utils.GetCrdInfo(crdJsonBytes)))
 		return
 	}
