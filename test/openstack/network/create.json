@@ -8,7 +8,7 @@
     "lifeCycle": {
       "CreateNetworkingV2Networks": {
         "opts": {
-          "name": "test-create-private-netywork",
+          "name": "test-create-private-network",
           "admin_state_up": true
         }
       }

@@ -7,13 +7,13 @@
   "spec": {
     "lifeCycle": {
       "UpdateNetworkingV2Networks": {
-        "networkID": "",
+        "networkID": "7c6f854d-4229-48a2-aea2-e7e28634da05",
         "Opts": {
           "admin_state_up": false
         }
       }
     },
-    "id": "",
+    "id": "7c6f854d-4229-48a2-aea2-e7e28634da05",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-network-secret"

@@ -7,10 +7,10 @@
   "spec": {
     "lifeCycle": {
       "GetNetworkingV2Networks": {
-        "id": ""
+        "id": "7c6f854d-4229-48a2-aea2-e7e28634da05"
       }
     },
-    "id": "",
+    "id": "7c6f854d-4229-48a2-aea2-e7e28634da05",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-network-secret"

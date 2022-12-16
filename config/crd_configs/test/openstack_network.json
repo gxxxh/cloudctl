@@ -1,0 +1,26 @@
+
+{
+  "CrdName": "OpenstackNetwork",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName":"id",
+      "InitJsonPath": "GetNetworkingV2Networks.id",
+      "DeleteJsonPath": "DeleteNetworkingV2Networks.networkID",
+      "InitRespJsonPath": "network.id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetNetworkingV2Networks": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteNetworkingV2Networks": {
+      "networkID": ""
+    }
+  },
+  "DomainJsonPath":"network"
+}

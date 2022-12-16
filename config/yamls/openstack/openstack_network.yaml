@@ -22,7 +22,7 @@ spec:
         - description: The administrative state of network. If false (down), the network does not forward packets.
           jsonPath: .spec.domain.admin_state_up
           name: AdminStateUp
-          type: string
+          type: boolean
         - description: Indicates whether network is currently operational. Possible values include
           jsonPath: .spec.domain.status
           name: Status
@@ -30,7 +30,7 @@ spec:
         - description: Subnets associated with this network.
           jsonPath: .spec.domain.subnets
           name: Subnets
-          type: object
+          type: string
         - description: TenantID is the project owner of the network.
           jsonPath: .spec.domain.tenant_id
           name: TenantID
@@ -38,7 +38,7 @@ spec:
         - description: Specifies whether the network resource can be accessed by any tenant.
           jsonPath: .spec.domain.shared
           name: Shared
-          type: string
+          type: boolean
       name: v1
       schema:
         openAPIV3Schema:
