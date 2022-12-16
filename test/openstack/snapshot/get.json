@@ -1,0 +1,19 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackSnapshot",
+  "metadata": {
+    "name": "openstack-snapshot-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "GetBlockstorageV3Snapshots": {
+        "id": "cdeb9527-a677-48bb-88b9-d8b64b0e76ca"
+      }
+    },
+    "id": "cdeb9527-a677-48bb-88b9-d8b64b0e76ca",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-snapshot-secret"
+    }
+  }
+}

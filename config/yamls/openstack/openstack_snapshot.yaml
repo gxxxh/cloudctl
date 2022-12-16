@@ -19,7 +19,7 @@ spec:
           jsonPath: .spec.domain.name
           name: Name
           type: string
-        - description: Status is the image status. It can be "queued" or "active"
+        - description: Status is the snapshot status. It can be "queued" or "active"
           jsonPath: .spec.domain.status
           name: Status
           type: string

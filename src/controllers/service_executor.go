@@ -45,8 +45,7 @@ func NewExecutor(crdConfig *CrdConfig, logger *Logger, secretInfo []byte) (*Exec
 }
 
 // 通过递归获取InitJson和DeleteJson中的函数名称
-func (e *Executor) parseFuncName(jsonRaw json.RawMessage) string {
-	jsonBytes, _ := jsonRaw.MarshalJSON()
+func (e *Executor) parseFuncName(jsonBytes []byte) string {
 	funcInfo := gjson.ParseBytes(jsonBytes).Map()
 	for funcName, _ := range funcInfo {
 		return funcName
@@ -65,7 +64,8 @@ func (e *Executor) IsNewCreate(crdJson []byte) bool {
 
 func (e *Executor) IsDelete(crdJson []byte) bool {
 	lifeCycle := gjson.GetBytes(crdJson, constants.LifeCycleJsonPath).String()
-	deleteFuncName := e.parseFuncName(e.crdConfig.DeleteJson)
+	deleteJsonBytes, _ := e.crdConfig.DeleteJson.MarshalJSON()
+	deleteFuncName := e.parseFuncName(deleteJsonBytes)
 	if strings.Contains(lifeCycle, deleteFuncName) {
 		return true
 	}
@@ -119,7 +119,7 @@ func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	return newCrdJson, nil
 }
 
-//执行删除命令后，元数据需要置空
+// 执行删除命令后，元数据需要置空
 func (e *Executor) SetMetaEmpty(crdJson []byte) ([]byte, error) {
 	var (
 		newCrdJson []byte
@@ -137,8 +137,7 @@ func (e *Executor) SetMetaEmpty(crdJson []byte) ([]byte, error) {
 	return newCrdJson, nil
 }
 
-//
-func (e *Executor) IsMetaEmpty(crdJson []byte) (bool) {
+func (e *Executor) IsMetaEmpty(crdJson []byte) bool {
 	for _, metaInfo := range e.crdConfig.GetMetaInfos() {
 		if gjson.GetBytes(crdJson, constants.SpecJsonPath+metaInfo.GetSpecName()).String() == "" {
 			return true

@@ -1,0 +1,26 @@
+
+{
+  "CrdName": "OpenstackSnapshot",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName":"id",
+      "InitJsonPath": "GetBlockstorageV3Snapshots.id",
+      "DeleteJsonPath": "DeleteBlockstorageV3Snapshots.id",
+      "InitRespJsonPath": "snapshot.id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetBlockstorageV3Snapshots": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteBlockstorageV3Snapshots": {
+      "id": ""
+    }
+  },
+  "DomainJsonPath":"snapshot"
+}

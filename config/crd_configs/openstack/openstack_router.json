@@ -1,0 +1,26 @@
+
+{
+  "CrdName": "OpenstackRouter",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName":"id",
+      "InitJsonPath": "GetNetworkingV2ExtensionsLayer3Routers.id",
+      "DeleteJsonPath": "DeleteNetworkingV2ExtensionsLayer3Routers.id",
+      "InitRespJsonPath": "router.id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetNetworkingV2ExtensionsLayer3Routers": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteNetworkingV2ExtensionsLayer3Routers": {
+      "id": ""
+    }
+  },
+  "DomainJsonPath":"router"
+}

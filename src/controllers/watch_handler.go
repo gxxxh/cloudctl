@@ -74,10 +74,10 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 	//execute
 	resp, err := executor.ServiceCall([]byte(oldLifeCycle))
 	if err != nil {
-		handler.eventRecorder.Event(crdJsonBytes, EventTypeError, "execute lifecycle error", err.Error())
+		handler.eventRecorder.Event(crdJsonBytes, EventTypeError, fmt.Sprintf("execute %v error", executor.parseFuncName([]byte(oldLifeCycle))), err.Error())
 		return nil
 	}
-	handler.eventRecorder.Event(crdJsonBytes, EventTypeNormal, "execute lifecycle succeed", string(resp))
+	handler.eventRecorder.Event(crdJsonBytes, EventTypeNormal, fmt.Sprintf("execute %v succeed", executor.parseFuncName([]byte(oldLifeCycle))), string(resp))
 	handler.logger.Info("call resp", "resp: ", string(resp))
 
 	//update lifecycle to nil
@@ -87,7 +87,7 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 		return err
 	}
 
-	//set meta info from resp if the lifecycle is create.json
+	//set meta info from resp if the lifecycle is Create resource
 	if isNewCreate {
 		crdJsonBytes, err = executor.SetMetaByResp(resp, crdJsonBytes)
 		if err != nil {

@@ -6,14 +6,11 @@
   },
   "spec": {
     "lifeCycle": {
-      "UpdateNetworkingV2ExtensionsLayer3Routers": {
-        "id": "928f9b5e-0bce-4a99-a653-c341b866f92a",
-        "opts": {
-          "name": "update-router-name"
-        }
+      "DeleteNetworkingV2ExtensionsLayer3Routers": {
+        "id": "30aee4be-a42a-482a-8f83-548488454679"
       }
     },
-    "id": "",
+    "id": "30aee4be-a42a-482a-8f83-548488454679",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-network-secret"
