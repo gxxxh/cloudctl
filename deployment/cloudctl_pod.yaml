@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cloudctl
+  namespace: cloudctl-ns
+spec:
+  containers:
+    - name: cloudctl-pod
+      image: docker.io/library/cloudctl:latest
+      imagePullPolicy: Never
+  serviceAccountName: cloudctl-sa
+  restartPolicy: Never

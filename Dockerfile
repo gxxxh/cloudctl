@@ -14,13 +14,14 @@ RUN go mod download
 COPY main.go main.go
 COPY src/ src/
 COPY config/ config/
-ENV CLOUDCTL_CONFIG_PATH ~/workspace/config/crd_configs/openstack
+ENV CLOUDCTL_CONFIG_PATH /workspace/config/crd_configs/openstack
 
 # Build
 # the GOARCH has not a default value to allow the binary be built according to the host where the command
 # was called. For example, if we call make docker-build in a local env which has the Apple Silicon M1 SO
 # the docker BUILDPLATFORM arg will be linux/arm64 when for Apple x86 it will be linux/amd64. Therefore,
 # by leaving it empty we can ensure that the container and binary shipped on it will have the same platform.
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o cloudctl main.go
+RUN go build -o /usr/local/go/bin/cloudctl
 
 ENTRYPOINT ["cloudctl"]
+#CMD sleep 10000000

@@ -48,6 +48,12 @@ rules:
       - secrets
     verbs:
       - get
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - "*"
   - nonResourceURLs:
       - /
     verbs:
