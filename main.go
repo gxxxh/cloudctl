@@ -1,25 +1,24 @@
 package main
 
-import (
-	"github.com/kube-stack/cloudctl/src/controllers"
-	"github.com/kubesys/client-go/pkg/kubesys"
-	"log"
-)
+import "log"
 
 func main() {
-	//client := kubesys.NewKubernetesClientWithDefaultKubeConfig()
+	////used in cluster
+	//client := kubesys.NewKubernetesClientInCluster()
+	////using for test
+	////client := kubesys.NewKubernetesClient("https://39.107.70.206:6443", "eyJhbGciOiJSUzI1NiIsImtpZCI6IlVfMWgwWjBsajRieERHSG5ZTFFLcGtnbktvRnRiNHl3NHNscWZ4NVlZVU0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJpbi1jbHVzdGVyLW5zIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImluLWNsdXN0ZXItc2VjcmV0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImluLWNsdXN0ZXItc2EiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI0Y2ExMGM5Yi1mOWRiLTQwOGItOGZiNy05M2JiMWM3NDAyZDciLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6aW4tY2x1c3Rlci1uczppbi1jbHVzdGVyLXNhIn0.12qL9-pR4esVkMi9b3FoQ16dH5NjfhfN8OL_-15XhurA3vt-zLfXG_HW7dTFBme3MsBmgcmSpu932ssTRGrd9f8sdWVSpEXbbcLfmzwdn8FxdcUAZRTP1JHCQwks8g1HP2afsuKUfPBvPUC6VUJziVe9wD0LPrnPvqVLs0nnQ5uQ5T7HAypUs-5MxmRDsqeDnGIJK32RP21I_9kDKM2UHx4sa-umsi58kx1O_pyW2vfeXp9uC46TZG2u7LWOshLqKk64Ao-aX8C74N1czr28yTzmZGc3mtHAXsotrlVs5WD-9aDVUFkP91qoR4rzWvdGc-CHQ2vCRlaa45YNgU7l7A")
 	//client.Init()
-	client := kubesys.NewKubernetesClient("https://39.107.70.206:6443", "eyJhbGciOiJSUzI1NiIsImtpZCI6IlVfMWgwWjBsajRieERHSG5ZTFFLcGtnbktvRnRiNHl3NHNscWZ4NVlZVU0ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdWJlcm5ldGVzLWNsaWVudC10b2tlbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJrdWJlcm5ldGVzLWNsaWVudCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6Ijc3NmY2ZTlmLTRjOGUtNDFhMC1iODQxLTY4MzQwMmI5YTRiOSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTprdWJlcm5ldGVzLWNsaWVudCJ9.HkdTWtzk-Rr-Lccf0FRbMkhgs9u5QQe0YD-pk1NUQroeWqZkX-ilh-b2c5udAJfh16B3vfrpqppdny4PIiT2JEmXj_xUrMV23QzW8sKbXKw5Mox6cXMaI9_8nI_FAHFWQUKRbY6eeBEs9MWLzI-EO3IeDVdBaCoglMMSWljfvdQHWxIvgATT75eNcg7JtQYsF95O9Dpgi6_HsJKGfFWAmDJ6AitExPmP-fbjieXDbF7dycY5IFkaXlh3zbABSY-ZlcG2pG8T7dkODF3i0qaQyZmTFgAnJaINfX3IeiwFqQrXLn9HeOafUzPNPKmnsMymjyRQ1vHu_wF0wx_flXEqNg")
-	client.Init()
-	//configPath := "/root/go/src/cloudctl/config/crd_configs/openstack/test"
-	configPath := "/root/go/src/cloudctl/config/crd_configs/test"
-	err := controllers.LoadCrdConfigs(configPath)
-	if err != nil {
-		panic(err)
-	}
-	for _, crdConfig := range controllers.CrdConfigs {
-		log.Println("watch resource ", crdConfig.CrdName)
-		// todo go func
-		controllers.DoWatch(client, crdConfig)
-	}
+	//configPath := os.Getenv(constants.CloudCtlConfigPath)
+	//if configPath == "" {
+	//	panic("project crd_configs path is empty")
+	//}
+	//err := controllers.LoadCrdConfigs(configPath)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//for _, crdConfig := range controllers.CrdConfigs {
+	//	log.Println("watch resource ", crdConfig.CrdName)
+	//	go controllers.DoWatch(client, crdConfig)
+	//}
+	log.Println("test")
 }

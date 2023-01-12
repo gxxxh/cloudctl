@@ -1,6 +1,6 @@
 package constants
 
-var ConfigPath = "/root/go/src/cloudctl/config"
+var ConfigPath = "/root/go/src/cloudctl/crd_configs"
 
 const (
 	//CRD Group & Version
@@ -23,3 +23,8 @@ const (
 )
 
 const CreateKeyWord = "Create"
+
+const (
+	KubernetesConfigPathEnv = "KUBERNETES_CONFIG_PATH"
+	CloudCtlConfigPath      = "CLOUDCTL_CONFIG_PATH"
+)

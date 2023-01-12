@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudctl-deployment
+  namespace: cloudctl-ns
+  labels:
+    project: cloudctl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: cloudctl
+  template:
+    metadata:
+      labels:
+        project: cloudctl
+    spec:
+      containers:
+        - name: cloudctl-pod
+          image: docker.io/library/cloudctl:latest
+          imagePullPolicy: Never
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 10m
+              memory: 64Mi
+      serviceAccountName: cloudctl-sa
