@@ -2,6 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/gxxxh/stacktack-go/src/worker"
+	"github.com/kube-stack/multicloud_service/src/utils"
 	"log"
 	"os"
 	"path/filepath"
@@ -111,16 +114,20 @@ func (x *CrdConfig) GetDomainJsonPath() string {
 }
 
 type CrdConfig struct {
-	CrdName        string          `protobuf:"bytes,1,opt,name=CrdName,proto3" json:"CrdName,omitempty"`
-	MetaInfos      []*MetaInfo     `protobuf:"bytes,2,rep,name=MetaInfos,proto3" json:"MetaInfos,omitempty"`
-	InitJson       json.RawMessage `protobuf:"bytes,3,opt,name=InitJson,proto3" json:"InitJson,omitempty"`
-	DeleteJson     json.RawMessage `protobuf:"bytes,4,opt,name=DeleteJson,proto3" json:"DeleteJson,omitempty"`
-	DomainJsonPath string          `protobuf:"bytes,5,opt,name=DomainJsonPath,proto3" json:"DomainJsonPath,omitempty"`
+	CrdName        string                 `protobuf:"bytes,1,opt,name=CrdName,proto3" json:"CrdName,omitempty"`
+	MetaInfos      []*MetaInfo            `protobuf:"bytes,2,rep,name=MetaInfos,proto3" json:"MetaInfos,omitempty"`
+	InitJson       json.RawMessage        `protobuf:"bytes,3,opt,name=InitJson,proto3" json:"InitJson,omitempty"`
+	DeleteJson     json.RawMessage        `protobuf:"bytes,4,opt,name=DeleteJson,proto3" json:"DeleteJson,omitempty"`
+	DomainJsonPath string                 `protobuf:"bytes,5,opt,name=DomainJsonPath,proto3" json:"DomainJsonPath,omitempty"`
+	ConsumerConfig *worker.ConsumerConfig `protobuf:"bytes,6,opt,name=ConsumerConfig,proto3" json:"ConsumerConfig,omitempty"`
 }
 
 var CrdConfigs = make([]*CrdConfig, 0, 0)
 
 func LoadCrdConfigs(path string) error {
+	if exists, _ := utils.PathExists(path); !exists {
+		return fmt.Errorf("config path %s not exist\n", path)
+	}
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil

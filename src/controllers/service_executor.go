@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// todo panic
+// 负责json的处理以及调用底层的云SDK函数
 type Executor struct {
 	service   *cloudservice.MultiCloudService
 	crdConfig *CrdConfig
@@ -72,6 +72,7 @@ func (e *Executor) IsDelete(crdJson []byte) bool {
 	return false
 }
 
+// 若id为空，根据lifecycle中的id填写到spec的id字段
 func (e *Executor) SetMetaByLifecycle(lifeCycle []byte, crdJson []byte) ([]byte, error) {
 	var (
 		newCrdJson []byte
@@ -101,7 +102,7 @@ func (e *Executor) SetMetaByLifecycle(lifeCycle []byte, crdJson []byte) ([]byte,
 	return newCrdJson, nil
 }
 
-// 根据创建返回的resp设置元数据
+// 根据创建返回的resp设置id，用于create
 func (e *Executor) SetMetaByResp(resp []byte, crdJson []byte) ([]byte, error) {
 	var (
 		newCrdJson []byte

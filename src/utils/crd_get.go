@@ -13,6 +13,10 @@ func GetName(crdJsonBytes []byte) string {
 	return gjson.GetBytes(crdJsonBytes, "metadata.name").String()
 }
 
+func GetID(crdJsonBytes []byte) string {
+	return gjson.GetBytes(crdJsonBytes, "spec.id").String()
+}
+
 func GetCrdInfo(crdJsonBytes []byte) string {
 	return GetNamespace(crdJsonBytes) + ":" + GetKind(crdJsonBytes) + "." + GetName(crdJsonBytes)
 }

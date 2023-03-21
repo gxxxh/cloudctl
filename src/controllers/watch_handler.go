@@ -8,23 +8,32 @@ import (
 	"github.com/kubesys/client-go/pkg/kubesys"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/sjson"
+	"strings"
 )
 
+// 负责和Kubernetes cluster交互
 type CrdWatchHandler struct {
-	client        *kubesys.KubernetesClient
-	crdConfig     *CrdConfig
-	eventRecorder *EventRecorder
-	logger        *Logger
+	client               *kubesys.KubernetesClient
+	crdConfig            *CrdConfig
+	eventRecorder        *EventRecorder
+	logger               *Logger
+	notificationMonitor  *NotificationMonitor
+	notificationInfoChan chan *NotificationInfo //用于和monitor通讯
+	idCache              IDCache                //serverID→(namespace, name)的映射
 }
 
 func NewCrdWatchHandler(crdConfig *CrdConfig, client *kubesys.KubernetesClient) *CrdWatchHandler {
 	logger := NewLogger().WithName("Controller").WithName(crdConfig.GetCrdName())
-	return &CrdWatchHandler{
-		client:        client,
-		crdConfig:     crdConfig,
-		eventRecorder: NewEventRecorder(client, logger),
-		logger:        logger,
+	crdWatcher := &CrdWatchHandler{
+		client:               client,
+		crdConfig:            crdConfig,
+		eventRecorder:        NewEventRecorder(client, logger),
+		logger:               logger,
+		notificationInfoChan: make(chan *NotificationInfo, 32),
+		idCache:              NewIDCache(),
 	}
+	crdWatcher.notificationMonitor = NewNotificationMonitor(crdConfig.ConsumerConfig, crdWatcher.notificationInfoChan)
+	return crdWatcher
 }
 
 func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
@@ -107,6 +116,12 @@ func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
 			return err
 		}
 		crdJsonBytes, err = executor.SetMetaEmpty(crdJsonBytes)
+	}
+	//update cache
+	if !isDelete {
+		handler.idCache.Add(utils.GetID(crdJsonBytes), utils.GetNamespace(crdJsonBytes), utils.GetName(crdJsonBytes))
+	} else {
+		handler.idCache.Delete(utils.GetID(crdJsonBytes))
 	}
 	// update domain to new info
 	err = handler.updateCrd(executor, crdJsonBytes, isDelete)
@@ -209,4 +224,28 @@ func (handler *CrdWatchHandler) getExecutor(crdJsonBytes []byte) (*Executor, err
 		return nil, err
 	}
 	return executor, nil
+}
+
+func (handler *CrdWatchHandler) HandleNotifications() {
+	for notificationInfo := range handler.notificationInfoChan {
+		handler.logger.Info("handling Notification ", "info", notificationInfo)
+		namespace, name := handler.idCache.Get(notificationInfo.ID)
+		if namespace == "" && name == "" {
+			continue
+		}
+		crdJson, err := handler.client.GetResource(handler.crdConfig.GetCrdName(), namespace, name)
+		if err != nil {
+			handler.logger.Error(err, "Get Server by serverID: %s error", notificationInfo.ID)
+			continue
+		}
+		// get Secret Info
+		executor, err := handler.getExecutor(crdJson)
+		if err != nil {
+			handler.logger.Error(err, "Get Executor  error")
+			continue
+		}
+		isDelete := strings.Contains(notificationInfo.Event, "delete")
+		handler.updateCrd(executor, crdJson, isDelete)
+
+	}
 }

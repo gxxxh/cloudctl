@@ -27,4 +27,5 @@ const CreateKeyWord = "Create"
 const (
 	KubernetesConfigPathEnv = "KUBERNETES_CONFIG_PATH"
 	CloudCtlConfigPath      = "CLOUDCTL_CONFIG_PATH"
+	NotificationConfigPath  = "NOTIFICATION_CONFIG_PATH"
 )
