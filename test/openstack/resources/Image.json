@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "image"
+  },
+  "spec": {
+    "id": "6d6b4f6e-5989-66f7-4aa8-66405fe45b7a",
+    "status": "ACTIVE"
+  }
+}

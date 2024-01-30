@@ -7,7 +7,7 @@
   "spec": {
     "lifeCycle": {
       "RebootComputeV2Servers": {
-        "id": "952b386b-6f30-46f6-b019-f522b157aa3a",
+        "id": "302a6064-fa7e-409f-877c-95125d0e7683",
         "Opts": {
           "Type": "SOFT"
         }

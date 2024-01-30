@@ -206,6 +206,13 @@ the config's InitJson, and fill the _domain_ with the response.
 }
 ```
 
+### 测试
+1. 获取k8s token
+```shell
+kubectl create -f https://raw.githubusercontent.com/kubesys/client-go/master/account.yaml
+
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-client | awk '{print $1}') | grep "token:" | awk -F":" '{print$2}' | sed 's/ //g'
+```
 ## Support APIS
 ### Openstack
 

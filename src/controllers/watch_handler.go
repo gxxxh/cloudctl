@@ -37,6 +37,7 @@ func NewCrdWatchHandler(crdConfig *CrdConfig, client *kubesys.KubernetesClient) 
 }
 
 func (handler *CrdWatchHandler) reconcile(obj map[string]interface{}) error {
+	handler.logger.Info("reconcile")
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		handler.logger.Error(err, "Marshal object to crd error")
@@ -160,6 +161,7 @@ func (handler *CrdWatchHandler) updateCrd(executor *Executor, crdJsonBytes []byt
 
 // todo go func
 func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
+	handler.logger.Info("DoAdded")
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		handler.logger.Error(err, "Marshal object to crd error")
@@ -172,6 +174,7 @@ func (handler *CrdWatchHandler) DoAdded(obj map[string]interface{}) {
 }
 
 func (handler *CrdWatchHandler) DoModified(obj map[string]interface{}) {
+	handler.logger.Info("DoModified")
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		handler.logger.Error(err, "Marshal object to crd error")
@@ -184,6 +187,7 @@ func (handler *CrdWatchHandler) DoModified(obj map[string]interface{}) {
 }
 
 func (handler *CrdWatchHandler) DoDeleted(obj map[string]interface{}) {
+	handler.logger.Info("DoDeleted")
 	crdJsonBytes, err := json.Marshal(obj)
 	if err != nil {
 		handler.logger.Error(err, "Marshal object to crd error")
@@ -235,7 +239,7 @@ func (handler *CrdWatchHandler) HandleNotifications() {
 		}
 		crdJson, err := handler.client.GetResource(handler.crdConfig.GetCrdName(), namespace, name)
 		if err != nil {
-			handler.logger.Error(err, "Get Server by serverID: %s error", notificationInfo.ID)
+			handler.logger.Error(err, "Get Server by serverID: ", "%s error", notificationInfo.ID)
 			continue
 		}
 		// get Secret Info

@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "autoscale"
+  },
+  "spec": {
+    "id": "5bd3e744-2c65-a11e-6ccb-0dff4f785a26",
+    "status": "ACTIVE"
+  }
+}

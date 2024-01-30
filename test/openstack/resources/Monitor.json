@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "monitor"
+  },
+  "spec": {
+    "id": "33dbe617-20f6-f57e-fa66-ea9c796bb756",
+    "status": "ACTIVE"
+  }
+}

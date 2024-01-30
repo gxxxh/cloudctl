@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "loadbalancer"
+  },
+  "spec": {
+    "id": "c841cdad-8881-040e-63ca-282701462de1",
+    "status": "ACTIVE"
+  }
+}

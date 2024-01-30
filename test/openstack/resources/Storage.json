@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "storage"
+  },
+  "spec": {
+    "id": "38296ef5-9b6c-28e0-92c7-8047fbb5f304",
+    "status": "ACTIVE"
+  }
+}

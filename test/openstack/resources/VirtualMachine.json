@@ -1,0 +1,11 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackResource",
+  "metadata": {
+    "name": "virtualmachine"
+  },
+  "spec": {
+    "id": "9d624eb8-7e06-4044-bb82-ca7d057fdb01",
+    "status": "ACTIVE"
+  }
+}
