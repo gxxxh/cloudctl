@@ -15,10 +15,10 @@ spec:
           jsonPath: .spec.id
           name: ID
           type: string
-        - description: Name is the human-readable display name for the router.
-          jsonPath: .spec.domain.name
-          name: Name
-          type: string
+#        - description: Name is the human-readable display name for the router.
+#          jsonPath: .spec.domain.name
+#          name: Name
+#          type: string
         - description:  Status indicates whether or not a router is currently operational.
           jsonPath: .spec.domain.status
           name: Status

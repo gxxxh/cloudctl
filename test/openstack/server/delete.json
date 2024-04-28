@@ -7,10 +7,10 @@
   "spec": {
     "lifeCycle": {
       "DeleteComputeV2Servers": {
-        "id": "6fd61ec6-4cf8-4e00-a523-4e92e96aa495"
+        "id": "615489d3-5873-4f12-a82b-97ffed0ac448"
       }
     },
-    "id": "",
+    "id": "615489d3-5873-4f12-a82b-97ffed0ac448",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-compute-secret"

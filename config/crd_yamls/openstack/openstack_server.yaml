@@ -15,10 +15,10 @@ spec:
           jsonPath: .spec.id
           name: ID
           type: string
-        - description: Server Name
-          jsonPath: .spec.domain.name
-          name: Name
-          type: string
+        #        - description: Server Name
+        #          jsonPath: .spec.domain.name
+        #          name: Name
+        #          type: string
         - description: Server Status
           jsonPath: .spec.domain.status
           name: Status

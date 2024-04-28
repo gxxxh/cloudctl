@@ -7,10 +7,10 @@
   "spec": {
     "lifeCycle": {
       "GetImageserviceV2Images": {
-        "id": "e6ae071e-c5d4-46d7-a2f2-84b00e4e27bb"
+        "id": "f1d82f19-db70-46d6-9b01-4dd8647fb080"
       }
     },
-    "id": "e6ae071e-c5d4-46d7-a2f2-84b00e4e27bb",
+    "id": "f1d82f19-db70-46d6-9b01-4dd8647fb080",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-image-secret"

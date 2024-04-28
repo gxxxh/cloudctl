@@ -1,0 +1,25 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackVolume",
+  "metadata": {
+    "name": "volume-test"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateBlockstorageV3Volumes": {
+        "Opts": {
+          "size": 5,
+            "availability_zone": "nova",
+          "Description": "test volume create",
+            "volume_type": "iscsi",
+          "name": "volume-test"
+        }
+      }
+    },
+    "id": "",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-volume-secret"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "CrdName": "OpenstackVolume",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName": "id",
+      "InitJsonPath": "GetBlockstorageV3Volumes.id",
+      "DeleteJsonPath": "DeleteBlockstorageV3Volumes.id",
+      "InitRespJsonPath": "volume.id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetBlockstorageV3Volumes": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteBlockstorageV3Volumes": {
+      "id": ""
+    }
+  },
+  "DomainJsonPath": "volume"
+}

@@ -1,0 +1,20 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackLoadBalancer",
+  "metadata": {
+    "name": "loadbalancer-group-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "GetComputeV2ExtensionsServergroups": {
+        "id": "1b44a3a3-bd98-427e-8498-8f6167478da9"
+      }
+    },
+    "id": "1b44a3a3-bd98-427e-8498-8f6167478da9",
+    "strategy": "round-robin",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-loadbalancer-secret"
+    }
+  }
+}

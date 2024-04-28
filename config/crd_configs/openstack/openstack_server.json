@@ -21,33 +21,5 @@
       "id": ""
     }
   },
-  "DomainJsonPath": "server",
-  "ConsumerConfig": {
-    "RabbitMQConnectConfig": {
-      "Name": "NovaInfoConsumer",
-      "RabbitHost": "133.133.135.136",
-      "RabbitPort": "5672",
-      "RabbitUserID": "guest",
-      "RabbitPassword": "guest",
-      "RabbitVirtualHost": "/"
-    },
-    "ExchangeConfig": {
-      "Exchange": "nova",
-      "ExchangeType": "topic",
-      "Durable": false,
-      "AutoDelete": false,
-      "Internal": false,
-      "NoWait": false
-    },
-    "QueueConfig": {
-      "QueueName": "notifications.info",
-      "BindingKey": "notifications.info",
-      "Durable": false,
-      "AutoDelete": false,
-      "Exclusive": false,
-      "NoWait": false
-    },
-    "ConsumerTag": "NovaInfoConsumer",
-    "AutoAck": false
-  }
+  "DomainJsonPath": "server"
 }

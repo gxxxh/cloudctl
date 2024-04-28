@@ -1,0 +1,19 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackVolume",
+  "metadata": {
+    "name": "volume-test"
+  },
+  "spec": {
+    "lifeCycle": {
+      "DeleteBlockstorageV3Volumes": {
+        "id": "a67d4af8-009f-4ed9-9a1a-5d731210d5d9"
+      }
+    },
+    "id": "a67d4af8-009f-4ed9-9a1a-5d731210d5d9",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-volume-secret"
+    }
+  }
+}

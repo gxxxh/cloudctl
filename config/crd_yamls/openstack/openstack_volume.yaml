@@ -1,0 +1,85 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: openstackvolumes.doslab.io
+spec:
+  group: doslab.io
+  names:
+    kind: OpenstackVolume
+    plural: openstackvolumes
+    singular: openstackvolume
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - description: Volume ID
+          jsonPath: .spec.id
+          name: ID
+          type: string
+        #        - description: Server Name
+        #          jsonPath: .spec.domain.name
+        #          name: Name
+        #          type: string
+        - description: Volume Status
+          jsonPath: .spec.domain.status
+          name: Status
+          type: string
+        - description: volume size
+          jsonPath: .spec.domain.size
+          name: SIZE
+          type: string
+        - description: volume type
+          jsonPath: .spec.domain.volume_type
+          name: TYPE
+          type: string
+        - description: description
+          jsonPath: .spec.domain.description
+          name: Description
+          type: string
+      name: v1
+      schema:
+        openAPIV3Schema:
+          description: volume is the Schema for the volume API
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: spec defines the desired state of openstack volume
+              properties:
+                domain:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                lifeCycle:
+                  description: request to be execute
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                #                  meta info
+                id:
+                  type: string
+                #                  secret info requeired
+                secretRef:
+                  description: SrereteRef
+                  properties:
+                    name:
+                      description: secretName
+                      type: string
+                    namespace:
+                      description: secretNamespace
+                      type: string
+                  required:
+                    - name
+                    - namespace
+                  type: object
+              required:
+                - secretRef
+              type: object
+            status:
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

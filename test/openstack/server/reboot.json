@@ -7,13 +7,13 @@
   "spec": {
     "lifeCycle": {
       "RebootComputeV2Servers": {
-        "id": "302a6064-fa7e-409f-877c-95125d0e7683",
+        "id": "615489d3-5873-4f12-a82b-97ffed0ac448",
         "Opts": {
           "Type": "SOFT"
         }
       }
     },
-    "id": "",
+    "id": "615489d3-5873-4f12-a82b-97ffed0ac448",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-compute-secret"

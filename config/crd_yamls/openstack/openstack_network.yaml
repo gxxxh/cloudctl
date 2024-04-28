@@ -15,10 +15,10 @@ spec:
           jsonPath: .spec.id
           name: ID
           type: string
-        - description: Human-readable name for the network. Might not be unique.
-          jsonPath: .spec.domain.name
-          name: Name
-          type: string
+#        - description: Human-readable name for the network. Might not be unique.
+#          jsonPath: .spec.domain.name
+#          name: Name
+#          type: string
         - description: The administrative state of network. If false (down), the network does not forward packets.
           jsonPath: .spec.domain.admin_state_up
           name: AdminStateUp

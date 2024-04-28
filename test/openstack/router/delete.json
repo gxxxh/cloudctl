@@ -7,10 +7,10 @@
   "spec": {
     "lifeCycle": {
       "DeleteNetworkingV2ExtensionsLayer3Routers": {
-        "id": "30aee4be-a42a-482a-8f83-548488454679"
+        "id": "7d1f1847-4c57-4a30-b7fc-c2b431b4e17a"
       }
     },
-    "id": "30aee4be-a42a-482a-8f83-548488454679",
+    "id": "7d1f1847-4c57-4a30-b7fc-c2b431b4e17a",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-network-secret"

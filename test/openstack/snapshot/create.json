@@ -8,8 +8,8 @@
     "lifeCycle": {
       "CreateBlockstorageV3Snapshots": {
         "Opts": {
-          "volume_id": "3fd158d7-4800-4c64-9058-05f8d71a0e27",
-          "name": "test-snapshot-create"
+          "volume_id": "8b979e70-caaf-4ee9-8c98-69e506ca6a0c",
+          "name": "openstack-snapshot-create"
         }
       }
     },

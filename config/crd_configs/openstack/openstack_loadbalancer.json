@@ -1,0 +1,25 @@
+{
+  "CrdName": "OpenstackLoadBalancer",
+  "MetaInfos": [
+    {
+      "SpecName": "id",
+      "DomainName": "id",
+      "CloudParaName": "id",
+      "InitJsonPath": "GetComputeV2ExtensionsServergroups.id",
+      "DeleteJsonPath": "DeleteComputeV2ExtensionsServergroups.id",
+      "InitRespJsonPath": "server_group.id",
+      "IsArray": false
+    }
+  ],
+  "InitJson": {
+    "GetComputeV2ExtensionsServergroups": {
+      "id": ""
+    }
+  },
+  "DeleteJson": {
+    "DeleteComputeV2ExtensionsServergroups": {
+      "id": ""
+    }
+  },
+  "DomainJsonPath": "server_group"
+}

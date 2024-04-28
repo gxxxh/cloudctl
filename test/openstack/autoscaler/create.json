@@ -1,0 +1,23 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackAutoScaler",
+  "metadata": {
+    "name": "autoscaler-group-create"
+  },
+  "spec": {
+    "lifeCycle": {
+      "CreateComputeV2ExtensionsServergroups": {
+        "Opts": {
+          "name": "autoscaler-group-create",
+          "policy": "anti-affinity"
+        }
+      }
+    },
+    "id": "",
+    "strategy": "vertical",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-autoscaler-secret"
+    }
+  }
+}

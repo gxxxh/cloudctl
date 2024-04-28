@@ -1,0 +1,17 @@
+{
+  "apiVersion": "doslab.io/v1",
+  "kind": "OpenstackAutoScaler",
+  "metadata": {
+    "name": "autoscaler-group-create"
+  },
+  "spec": {
+    "lifeCycle": {
+    },
+    "id": "e3d84f92-a6e0-49a9-a192-2bfac7778fc0",
+    "strategy": "horizontal",
+    "secretRef": {
+      "namespace": "default",
+      "name": "openstack-autoscaler-secret"
+    }
+  }
+}

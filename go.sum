@@ -19,8 +19,8 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/kube-stack/multicloud_service v0.1.6 h1:BaDeWicf7Zw6Ubl4Onm4WvEk/B2Z7uvvPkscWBNak+k=
-github.com/kube-stack/multicloud_service v0.1.6/go.mod h1:EOcZJK4G0wkoCdnE9cFV3qnImi+QRe6O4abfKb21D8c=
+github.com/kube-stack/multicloud_service v0.1.9 h1:u28T/L9iqztYoZTRjXBtM+VUjVYnSQEv7ZMF1i2F22s=
+github.com/kube-stack/multicloud_service v0.1.9/go.mod h1:iw52EjY26bRcyriU3d7YeDPVbdYf120M7fg3oSC4/KM=
 github.com/kubesys/client-go v1.1.13 h1:Yhz6IS5Ei/Q/c7h7wQO7lWxtCFB1T/44NansBP0ioyc=
 github.com/kubesys/client-go v1.1.13/go.mod h1:6QJdZYk5UUfeDG6nN1gx8q0YZpOkE2UFS2vGqw8f4zQ=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=

@@ -15,10 +15,10 @@ spec:
           jsonPath: .spec.id
           name: ID
           type: string
-        - description: Display name
-          jsonPath: .spec.domain.name
-          name: Name
-          type: string
+#        - description: Display name
+#          jsonPath: .spec.domain.name
+#          name: Name
+#          type: string
         - description: Status is the snapshot status. It can be "queued" or "active"
           jsonPath: .spec.domain.status
           name: Status

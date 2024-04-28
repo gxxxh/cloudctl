@@ -7,10 +7,10 @@
   "spec": {
     "lifeCycle": {
       "DeleteNetworkingV2Networks": {
-        "networkID": "7c6f854d-4229-48a2-aea2-e7e28634da05"
+        "networkID": "e41d8ff8-7c60-46d4-9f37-0253cd93f08e"
       }
     },
-    "id": "7c6f854d-4229-48a2-aea2-e7e28634da05",
+    "id": "e41d8ff8-7c60-46d4-9f37-0253cd93f08e",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-network-secret"

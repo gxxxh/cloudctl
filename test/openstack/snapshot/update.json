@@ -7,13 +7,13 @@
   "spec": {
     "lifeCycle": {
       "UpdateBlockstorageV3Snapshots": {
-        "Id": "cdeb9527-a677-48bb-88b9-d8b64b0e76ca",
+        "Id": "b05a376f-5302-401d-b454-dcbeaa8ff826",
         "Opts": {
           "name": "updated_snapshot"
         }
       }
     },
-    "id": "cdeb9527-a677-48bb-88b9-d8b64b0e76ca",
+    "id": "b05a376f-5302-401d-b454-dcbeaa8ff826",
     "secretRef": {
       "namespace": "default",
       "name": "openstack-snapshot-secret"
